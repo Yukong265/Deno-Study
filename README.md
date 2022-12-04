@@ -1,6 +1,6 @@
 # Deno
 
-[![Build Status - Cirrus][]][Build status]
+
 <img align="right" src="https://deno.land/logo.svg" height="150px" alt="the deno mascot dinosaur standing in the rain">
 
 Deno is a _simple_, _modern_ and _secure_ runtime for **JavaScript** and
@@ -96,5 +96,4 @@ We appreciate your help!
 To contribute, please read our
 [contributing instructions](https://deno.land/manual/contributing).
 
-[Build Status - Cirrus]: https://github.com/denoland/deno/workflows/ci/badge.svg?branch=main&event=push
-[Build status]: https://github.com/denoland/deno/actions
+
