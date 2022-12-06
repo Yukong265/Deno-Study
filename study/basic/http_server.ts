@@ -17,5 +17,4 @@ const handler = async (request : Request): Promise<Response> => {
     })
 }
 
-console.log("Listening server on https://localhost:8000")
 serve(handler);

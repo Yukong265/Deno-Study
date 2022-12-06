@@ -1,9 +1,7 @@
-import { Application } from "https://deno.land/x/oak/mod.ts";
+import { Application, FlashServer, hasFlash } from "https://deno.land/x/oak/mod.ts";
 
-const app = new Application();
+const appOptions = hasFlash() ? { severConstructor: FlashServer } : undefined;
 
-app.use((ctx) => {
-    ctx.response.body = "hello world";
-});
+const app = new Application(appOptions);
 
-await app.listen({ port:8000 })
+app.listen();
