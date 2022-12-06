@@ -1,7 +1,18 @@
-import { Application, FlashServer, hasFlash } from "https://deno.land/x/oak/mod.ts";
+import { Application, Router, RouterContext } from "https://deno.land/x/oak/mod.ts";
 
-const appOptions = hasFlash() ? { severConstructor: FlashServer } : undefined;
+const app = new Application();
+const router = new Router()
+const port = 8000
 
-const app = new Application(appOptions);
 
-app.listen();
+router.get('/', (context: RouterContext) => {
+    context.response.body = {
+        message: "hello world"
+    }
+})
+
+app.use(router.routes())
+app.use(router.allowedMethods())
+
+
+await app.listen({ port:8000 });
