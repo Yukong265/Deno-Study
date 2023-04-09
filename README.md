@@ -1,4 +1,5 @@
-# Deno
+# Deno-Study
+Node.js의 업데이트가 끝나고 나온 Deno를 공부하는 레포입니다.
 
 
 <img align="right" src="https://deno.land/logo.svg" height="150px" alt="the deno mascot dinosaur standing in the rain">
@@ -98,5 +99,3 @@ To contribute, please read our
 
 
 =======
-# Deno-Study
-Node.js의 업데이트가 끝나고 나온 Deno를 공부하는 레포입니다.
