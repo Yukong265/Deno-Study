@@ -5,6 +5,10 @@ const router = new Router()
 const port = 8000
 
 
+app.use(router.routes())    
+app.use(router.allowedMethods())
+
+
 router.get('/response', (context: RouterContext) => {
     context.response.body = {
         message: "hello world"
@@ -18,9 +22,6 @@ router.post('/request', async ( {request, response} :  RouterContext) => {
 
     response.body = {username, id}
 })
-
-app.use(router.routes())    
-app.use(router.allowedMethods())
 
 console.log(`server running on port ${port}`)
 
