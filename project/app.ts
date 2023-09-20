@@ -23,8 +23,13 @@ app.use(async (ctx, next) => {
 });
 
 router
-  .get("/post", async (ctx: Context) => {
+  .get("/posts", async (ctx: Context) => {
     ctx.response.body = await client.query(`SELECT * FROM post`);
+  })
+  .get("/post/:id",async (ctx : Context) => {
+    const { id } = getQuery(ctx, { mergeParams: true });
+    const post = await client.query("SELECT * FROM post WHERE id = ?", [Number(id)])
+    ctx.response.body = post;
   })
   .post("/post", async (ctx: Context) => {
     if (!ctx.request.hasBody){
