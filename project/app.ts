@@ -6,7 +6,6 @@ import {
 } from "https://deno.land/x/oak/mod.ts";
 import client from "./db/client.ts";
 
-
 const { getQuery } = helpers;
 
 const app = new Application();
@@ -26,21 +25,42 @@ router
   .get("/posts", async (ctx: Context) => {
     ctx.response.body = await client.query(`SELECT * FROM post`);
   })
-  .get("/post/:id",async (ctx : Context) => {
+  .get("/post/:id", async (ctx: Context) => {
     const { id } = getQuery(ctx, { mergeParams: true });
-    const post = await client.query("SELECT * FROM post WHERE id = ?", [Number(id)])
+    const post = await client.query("SELECT * FROM post WHERE id = ?", [
+      Number(id),
+    ]);
     ctx.response.body = post;
   })
   .post("/post", async (ctx: Context) => {
-    if (!ctx.request.hasBody){
+    if (!ctx.request.hasBody) {
       ctx.throw(415);
     }
     const body = await ctx.request.body().value;
-    await client.execute(`INSERT INTO post(title, content) VALUES(?, ?)`, [body.title, body.content]);
+    await client.execute(`INSERT INTO post(title, content) VALUES(?, ?)`, [
+      body.title,
+      body.content,
+    ]);
     ctx.response.status = 200;
     ctx.response.body = {
-      "message" : "success",
-      "code" : 200
+      message: "success",
+      code: 201,
+    };
+  })
+  .put("/post/:id", async (ctx: Context) => {
+    const { id } = getQuery(ctx, { mergeParams: true });
+    if (!ctx.request.body) {
+      ctx.throw(415);
+    } else {
+      const body = await ctx.request.body().value;
+      await client.execute(
+        `UPDATE post SET title = ?, content = ? WHERE id = ?`,
+        [body.title, body.content, id]
+      );
+      ctx.response.body = {
+        message: "success",
+        code: 200,
+      };
     }
   });
 
