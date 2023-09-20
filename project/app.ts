@@ -27,10 +27,16 @@ router
     ctx.response.body = await client.query(`SELECT * FROM post`);
   })
   .post("/post", async (ctx: Context) => {
-    const body = await ctx.request.body();
-    console.log(body.value)
-    ctx.response.body = body.value
-    //ctx.response.body = await client.execute(`INSERT TO post(title, content) values(?)`, [body.title, body.content]);
+    if (!ctx.request.hasBody){
+      ctx.throw(415);
+    }
+    const body = await ctx.request.body().value;
+    await client.execute(`INSERT INTO post(title, content) VALUES(?, ?)`, [body.title, body.content]);
+    ctx.response.status = 200;
+    ctx.response.body = {
+      "message" : "success",
+      "code" : 200
+    }
   });
 
 router
