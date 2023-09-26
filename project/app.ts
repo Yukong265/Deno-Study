@@ -15,6 +15,12 @@ const port = 8000;
 app.use(router.routes());
 app.use(router.allowedMethods());
 
+app.use(async (ctx:Context) => {
+  const result = ctx.request.body({ type:"json" })
+  const text = await result.value;
+  ctx.request.body = text[0];
+})
+
 app.use(async (ctx, next) => {
   await next();
   const rt = ctx.response.headers.get("X-Response-Time");
@@ -30,7 +36,15 @@ router
     const post = await client.query("SELECT * FROM post WHERE id = ?", [
       Number(id),
     ]);
-    ctx.response.body = post;
+    if (post.length == 0) {
+      ctx.response.status = 404;
+      ctx.response.body = {
+        message: "post not found",
+        code: 404,
+      };
+    } else {
+      ctx.response.body = post;
+    }
   })
   .post("/post", async (ctx: Context) => {
     if (!ctx.request.hasBody) {
@@ -41,7 +55,7 @@ router
       body.title,
       body.content,
     ]);
-    ctx.response.status = 200;
+    ctx.response.status = 201;
     ctx.response.body = {
       message: "success",
       code: 201,
@@ -53,14 +67,25 @@ router
       ctx.throw(415);
     } else {
       const body = await ctx.request.body().value;
-      await client.execute(
+      const post = await client.execute(
         `UPDATE post SET title = ?, content = ? WHERE id = ?`,
         [body.title, body.content, id]
       );
+      if (!post) {
+        ctx.throw(404);
+      }
       ctx.response.body = {
         message: "success",
         code: 200,
       };
+    }
+  })
+  .delete("/post/:id", async (ctx: Context) => {
+    const { id } = getQuery(ctx, { mergeParams: true });
+    if (!ctx.request.body) {
+      ctx.throw(415);
+    } else {
+      await client.execute(`DELETE FROM post WHERE id = ?`, [id]);
     }
   });
 
